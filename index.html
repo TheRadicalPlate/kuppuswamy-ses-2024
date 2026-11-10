@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kuppuswamy Socioeconomic Status Calculator (2024 Revision)</title>
+  <meta name="description" content="Online automated calculator for modified Kuppuswamy Socioeconomic Status Scale based on the 2024 CPI-IW update by Ahmad, Faizi, & Siddiqui.">
+  <style>
+    :root {
+      --primary: #1F497D;
+      --primary-hover: #16365c;
+      --accent: #2A5C9A;
+      --bg: #f3f4f6;
+      --card-bg: #ffffff;
+      --text-main: #111827;
+      --text-muted: #4b5563;
+      --border: #d1d5db;
+      --border-light: #e5e7eb;
+      --success-bg: #ecfdf5;
+      --success-text: #065f46;
+      --highlight: #f8fafc;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+      line-height: 1.5;
+      padding: 24px 16px;
+    }
+
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+    }
+
+    header {
+      background: var(--primary);
+      color: #ffffff;
+      padding: 24px 28px;
+    }
+
+    header h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      letter-spacing: -0.01em;
+    }
+
+    header p {
+      font-size: 0.88rem;
+      color: #e0e7ff;
+      opacity: 0.95;
+    }
+
+    .main-content {
+      padding: 28px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text-main);
+    }
+
+    .helper-text {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    input[type="number"], select {
+      width: 100%;
+      padding: 11px 14px;
+      font-size: 0.95rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background-color: #fff;
+      color: var(--text-main);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input[type="number"]:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(42, 92, 154, 0.15);
+    }
+
+    .result-panel {
+      margin-top: 28px;
+      background: var(--highlight);
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .result-score-title {
+      font-size: 0.88rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .result-score-val {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin: 4px 0;
+    }
+
+    .result-ses-label {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 14px;
+    }
+
+    .breakdown-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-light);
+      font-size: 0.82rem;
+    }
+
+    .breakdown-item {
+      background: #ffffff;
+      padding: 8px 6px;
+      border-radius: 6px;
+      border: 1px solid var(--border-light);
+    }
+
+    .breakdown-item span {
+      display: block;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+    }
+
+    .breakdown-item b {
+      font-size: 1rem;
+      color: var(--primary);
+    }
+
+    .action-buttons {
+      margin-top: 16px;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 14px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      border-radius: 6px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-secondary {
+      background-color: #ffffff;
+      border-color: var(--border);
+      color: var(--text-main);
+    }
+
+    .btn-secondary:hover {
+      background-color: #f9fafb;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+    }
+
+    /* Attribution & Academic Metadata Section */
+    .metadata-panel {
+      margin-top: 32px;
+      border-top: 1px solid var(--border-light);
+      padding-top: 20px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .metadata-panel h3 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 6px;
+    }
+
+    .metadata-panel p {
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+
+    .citation-wrapper {
+      position: relative;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 12px;
+      margin: 10px 0 16px 0;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.78rem;
+      line-height: 1.45;
+      color: #334155;
+      user-select: all;
+    }
+
+    .copy-pill {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .copy-pill:hover {
+      background: var(--primary-hover);
+    }
+
+    footer {
+      background: #f9fafb;
+      border-top: 1px solid var(--border-light);
+      padding: 16px 28px;
+      text-align: center;
+      font-size: 0.75rem;
+      color: #6b7280;
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: underline;
+    }
+
+    @media print {
+      body {
+        background: #fff;
+        padding: 0;
+      }
+      .container {
+        border: none;
+        box-shadow: none;
+        max-width: 100%;
+      }
+      .action-buttons, .copy-pill {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>Kuppuswamy SES Calculator</h1>
+    <p>Automated Socioeconomic Classification (Updated August 2024 / CPI-IW Jan 2024)</p>
+  </header>
+
+  <div class="main-content">
+    <div class="form-group">
+      <label for="income">1. Monthly Family Income (₹)</label>
+      <div class="helper-text">Enter the exact total monthly household income in Indian Rupees.</div>
+      <input type="number" id="income" placeholder="e.g. 35000" min="0" oninput="calculateSES()">
+    </div>
+
+    <div class="form-group">
+      <label for="education">2. Education of Family Head</label>
+      <select id="education" onchange="calculateSES()">
+        <option value="">-- Select Educational Attainment --</option>
+        <option value="7">Post-Graduate or Professional Degree (Score: 7)</option>
+        <option value="6">Graduate Degree (Score: 6)</option>
+        <option value="5">Intermediate / Post High-School Diploma (Score: 5)</option>
+        <option value="4">High School Certificate (Score: 4)</option>
+        <option value="3">Middle School Certificate (Score: 3)</option>
+        <option value="2">Literate (Less than Middle School) (Score: 2)</option>
+        <option value="1">Illiterate (Score: 1)</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="occupation">3. Occupation of Family Head</label>
+      <select id="occupation" onchange="calculateSES()">
+        <option value="">-- Select Occupation Category --</option>
+        <option value="10">Professionals (Score: 10)</option>
+        <option value="6">Semi-Professionals (Score: 6)</option>
+        <option value="5">Shopkeeper / Clerical / Arithmetic Skill Jobs (Score: 5)</option>
+        <option value="4">Skilled Worker (Score: 4)</option>
+        <option value="3">Semi-Skilled Worker (Score: 3)</option>
+        <option value="2">Unskilled Worker (Score: 2)</option>
+        <option value="1">Unemployed (Score: 1)</option>
+      </select>
+    </div>
+
+    <div class="result-panel">
+      <div class="result-score-title">Cumulative Kuppuswamy Score</div>
+      <div class="result-score-val" id="total-score">-</div>
+      <div class="result-ses-label" id="ses-class">Awaiting full input...</div>
+
+      <div class="breakdown-grid">
+        <div class="breakdown-item">
+          <span>Income Score</span>
+          <b id="score-inc">-</b>
+        </div>
+        <div class="breakdown-item">
+          <span>Education Score</span>
+          <b id="score-edu">-</b>
+        </div>
+        <div class="breakdown-item">
+          <span>Occupation Score</span>
+          <b id="score-occ">-</b>
+        </div>
+      </div>
+
+      <div class="action-buttons">
+        <button class="btn btn-secondary" onclick="resetForm()">Reset</button>
+        <button class="btn btn-primary" onclick="window.print()">Print / Save Assessment</button>
+      </div>
+    </div>
+
+    <!-- Methodology & Attribution -->
+    <div class="metadata-panel">
+      <h3>Methodological Reference</h3>
+      <p>
+        Income thresholds are calibrated to the Consumer Price Index for Industrial Workers (CPI-IW) as updated by:
+        <br>
+        <b>Ahmad, A., Faizi, N., & Siddiqui, N. A. (2024).</b> <i>Revised Prasad and Kuppuswamy socioeconomic scales for India in 2024: Methods and Updates</i>. Indian Journal of Community Health, 36(4), 598–603. 
+        DOI: <a href="https://doi.org/10.47203/IJCH.2024.v36i04.015" target="_blank" rel="noopener">10.47203/IJCH.2024.v36i04.015</a> (CC BY-NC-ND 4.0).
+      </p>
+
+      <h3>How to Cite This Digital Instrument</h3>
+      <p>If you utilized this automated calculator for research data collection or participant classification, cite this tool as follows:</p>
+
+      <div class="citation-wrapper" id="citation-box">
+        <button class="copy-pill" onclick="copyCitation()">Copy</button>
+        Alphonso, R. (2024). Interactive Kuppuswamy Socioeconomic Status Calculator (Version 2024.1) [Software]. Zenodo. https://doi.org/10.5281/zenodo.YOUR_ZENODO_ID
+      </div>
+
+      <p style="font-size:0.76rem;">
+        <b>Manuscript Methodology Text:</b> <i>"Household socioeconomic status was determined using the 2024 modified Kuppuswamy scale (Ahmad et al., 2024), evaluated via the automated calculation tool developed by Alphonso (2024)."</i>
+      </p>
+    </div>
+  </div>
+
+  <footer>
+    Open-Access Academic Resource &bull; Released under MIT License &bull; Preserved via CERN Zenodo
+  </footer>
+</div>
+
+<script>
+  function getIncomeScore(val) {
+    if (isNaN(val) || val === "" || val === null) return 0;
+    const n = Number(val);
+    if (n >= 57584) return 12;
+    if (n >= 28792) return 10;
+    if (n >= 21594) return 6;
+    if (n >= 14396) return 4;
+    if (n >= 8638)  return 3;
+    if (n >= 2908)  return 2;
+    return 1;
+  }
+
+  function calculateSES() {
+    const incInput = document.getElementById("income").value;
+    const eduScore = parseInt(document.getElementById("education").value) || 0;
+    const occScore = parseInt(document.getElementById("occupation").value) || 0;
+
+    const totalEl = document.getElementById("total-score");
+    const sesEl = document.getElementById("ses-class");
+    const incEl = document.getElementById("score-inc");
+    const eduEl = document.getElementById("score-edu");
+    const occEl = document.getElementById("score-occ");
+
+    if (incInput === "" || eduScore === 0 || occScore === 0) {
+      totalEl.innerText = "-";
+      sesEl.innerText = "Please complete all 3 inputs";
+      incEl.innerText = incInput !== "" ? getIncomeScore(incInput) : "-";
+      eduEl.innerText = eduScore || "-";
+      occEl.innerText = occScore || "-";
+      return;
+    }
+
+    const incScore = getIncomeScore(incInput);
+    const total = incScore + eduScore + occScore;
+
+    incEl.innerText = incScore;
+    eduEl.innerText = eduScore;
+    occEl.innerText = occScore;
+    totalEl.innerText = total + " / 29";
+
+    let ses = "";
+    if (total >= 26) {
+      ses = "Upper Class (Class I)";
+    } else if (total >= 16) {
+      ses = "Upper Middle Class (Class II)";
+    } else if (total >= 11) {
+      ses = "Middle Class (Class III)";
+    } else if (total >= 5) {
+      ses = "Lower Middle Class (Class IV)";
+    } else {
+      ses = "Lower Class (Class V)";
+    }
+
+    sesEl.innerText = ses;
+  }
+
+  function resetForm() {
+    document.getElementById("income").value = "";
+    document.getElementById("education").value = "";
+    document.getElementById("occupation").value = "";
+    document.getElementById("total-score").innerText = "-";
+    document.getElementById("ses-class").innerText = "Awaiting full input...";
+    document.getElementById("score-inc").innerText = "-";
+    document.getElementById("score-edu").innerText = "-";
+    document.getElementById("score-occ").innerText = "-";
+  }
+
+  function copyCitation() {
+    const text = document.getElementById("citation-box").innerText.replace("Copy", "").trim();
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.querySelector(".copy-pill");
+      const orig = btn.innerText;
+      btn.innerText = "Copied!";
+      setTimeout(() => { btn.innerText = orig; }, 2000);
+    });
+  }
+</script>
+</body>
+</html>
