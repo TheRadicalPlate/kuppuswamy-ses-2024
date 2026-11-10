@@ -283,6 +283,9 @@
       }
     }
   </style>
+</style>
+  <script data-goatcounter="https://theradicalplate.goatcounter.com/count"
+          async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
 
@@ -437,6 +440,14 @@
     }
 
     sesEl.innerText = ses;
+      // --- TRACK ACTUAL CALCULATION COMPLETION ---
+    if (window.goatcounter && window.goatcounter.count) {
+      window.goatcounter.count({
+        path: 'event/ses-calculated',
+        title: 'SES Score Calculated',
+        event: true
+      });
+    }
   }
 
   function resetForm() {
