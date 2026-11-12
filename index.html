@@ -28,7 +28,7 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "Noto Sans Devanagari", "Noto Sans Tamil", "Noto Sans Bengali", sans-serif;
       background-color: var(--bg);
       color: var(--text-main);
       line-height: 1.5;
@@ -51,6 +51,14 @@
       padding: 24px 28px;
     }
 
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
     header h1 {
       font-size: 1.4rem;
       font-weight: 700;
@@ -64,6 +72,35 @@
       opacity: 0.95;
     }
 
+    .lang-bar {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .lang-btn {
+      background: rgba(255, 255, 255, 0.14);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 5px 11px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .lang-btn:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    .lang-btn.active {
+      background: #ffffff;
+      color: var(--primary);
+      border-color: #ffffff;
+    }
+
     .main-content {
       padding: 28px;
     }
@@ -74,7 +111,7 @@
 
     label {
       display: block;
-      font-size: 0.9rem;
+      font-size: 0.92rem;
       font-weight: 600;
       margin-bottom: 6px;
       color: var(--text-main);
@@ -161,6 +198,51 @@
       color: var(--primary);
     }
 
+    .reference-table-wrapper {
+      margin-top: 18px;
+      text-align: left;
+      background: #ffffff;
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 12px 14px;
+    }
+
+    .reference-table-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .reference-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+    }
+
+    .reference-table th, .reference-table td {
+      padding: 6px 8px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .reference-table th {
+      font-weight: 600;
+      color: var(--text-muted);
+      background: #f9fafb;
+    }
+
+    .reference-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .reference-table tr.active-tier {
+      background-color: var(--success-bg);
+      color: var(--success-text);
+      font-weight: 700;
+    }
+
     .action-buttons {
       margin-top: 16px;
       display: flex;
@@ -201,7 +283,7 @@
       background-color: var(--primary-hover);
     }
 
-    /* Attribution & Academic Metadata Section */
+    /* Attribution & Academic Metadata Section (Strictly English) */
     .metadata-panel {
       margin-top: 32px;
       border-top: 1px solid var(--border-light);
@@ -278,12 +360,11 @@
         box-shadow: none;
         max-width: 100%;
       }
-      .action-buttons, .copy-pill {
+      .action-buttons, .copy-pill, .lang-bar {
         display: none;
       }
     }
   </style>
-</style>
   <script data-goatcounter="https://theradicalplate.goatcounter.com/count"
           async src="//gc.zgo.at/count.js"></script>
 </head>
@@ -291,72 +372,118 @@
 
 <div class="container">
   <header>
-    <h1>Kuppuswamy SES Calculator</h1>
-    <p>Automated Socioeconomic Classification (Updated August 2024 / CPI-IW Jan 2024)</p>
+    <div class="header-top">
+      <div>
+        <h1 id="ui-title">Kuppuswamy SES Calculator</h1>
+        <p id="ui-subtitle">Automated Socioeconomic Classification (Updated August 2024 / CPI-IW Jan 2024)</p>
+      </div>
+    </div>
+    <div class="lang-bar" role="group" aria-label="Language selector">
+      <button type="button" class="lang-btn active" data-lang="en" onclick="setLanguage('en')">English</button>
+      <button type="button" class="lang-btn" data-lang="hi" onclick="setLanguage('hi')">हिन्दी (Hindi)</button>
+      <button type="button" class="lang-btn" data-lang="ta" onclick="setLanguage('ta')">தமிழ் (Tamil)</button>
+      <button type="button" class="lang-btn" data-lang="mr" onclick="setLanguage('mr')">मराठी (Marathi)</button>
+      <button type="button" class="lang-btn" data-lang="bn" onclick="setLanguage('bn')">বাংলা (Bengali)</button>
+    </div>
   </header>
 
   <div class="main-content">
     <div class="form-group">
-      <label for="income">1. Monthly Family Income (₹)</label>
-      <div class="helper-text">Enter the exact total monthly household income in Indian Rupees.</div>
+      <label for="income" id="ui-inc-label">1. Monthly Family Income (₹)</label>
+      <div class="helper-text" id="ui-inc-helper">Enter the exact total monthly household income in Indian Rupees.</div>
       <input type="number" id="income" placeholder="e.g. 35000" min="0" oninput="calculateSES()">
     </div>
 
     <div class="form-group">
-      <label for="education">2. Education of Family Head</label>
+      <label for="education" id="ui-edu-label">2. Education of Family Head</label>
       <select id="education" onchange="calculateSES()">
-        <option value="">-- Select Educational Attainment --</option>
-        <option value="7">Post-Graduate or Professional Degree (Score: 7)</option>
-        <option value="6">Graduate Degree (Score: 6)</option>
-        <option value="5">Intermediate / Post High-School Diploma (Score: 5)</option>
-        <option value="4">High School Certificate (Score: 4)</option>
-        <option value="3">Middle School Certificate (Score: 3)</option>
-        <option value="2">Literate (Less than Middle School) (Score: 2)</option>
-        <option value="1">Illiterate (Score: 1)</option>
+        <option value="" id="ui-edu-opt0">-- Select Educational Attainment --</option>
+        <option value="7" id="ui-edu-opt7">Post-Graduate or Professional Degree (Score: 7)</option>
+        <option value="6" id="ui-edu-opt6">Graduate Degree (Score: 6)</option>
+        <option value="5" id="ui-edu-opt5">Intermediate / Post High-School Diploma (Score: 5)</option>
+        <option value="4" id="ui-edu-opt4">High School Certificate (Score: 4)</option>
+        <option value="3" id="ui-edu-opt3">Middle School Certificate (Score: 3)</option>
+        <option value="2" id="ui-edu-opt2">Literate (Less than Middle School) (Score: 2)</option>
+        <option value="1" id="ui-edu-opt1">Illiterate (Score: 1)</option>
       </select>
     </div>
 
     <div class="form-group">
-      <label for="occupation">3. Occupation of Family Head</label>
+      <label for="occupation" id="ui-occ-label">3. Occupation of Family Head</label>
       <select id="occupation" onchange="calculateSES()">
-        <option value="">-- Select Occupation Category --</option>
-        <option value="10">Professionals (Score: 10)</option>
-        <option value="6">Semi-Professionals (Score: 6)</option>
-        <option value="5">Shopkeeper / Clerical / Arithmetic Skill Jobs (Score: 5)</option>
-        <option value="4">Skilled Worker (Score: 4)</option>
-        <option value="3">Semi-Skilled Worker (Score: 3)</option>
-        <option value="2">Unskilled Worker (Score: 2)</option>
-        <option value="1">Unemployed (Score: 1)</option>
+        <option value="" id="ui-occ-opt0">-- Select Occupation Category --</option>
+        <option value="10" id="ui-occ-opt10">Professionals (Score: 10)</option>
+        <option value="6" id="ui-occ-opt6">Semi-Professionals (Score: 6)</option>
+        <option value="5" id="ui-occ-opt5">Shopkeeper / Clerical / Arithmetic Skill Jobs (Score: 5)</option>
+        <option value="4" id="ui-occ-opt4">Skilled Worker (Score: 4)</option>
+        <option value="3" id="ui-occ-opt3">Semi-Skilled Worker (Score: 3)</option>
+        <option value="2" id="ui-occ-opt2">Unskilled Worker (Score: 2)</option>
+        <option value="1" id="ui-occ-opt1">Unemployed (Score: 1)</option>
       </select>
     </div>
 
     <div class="result-panel">
-      <div class="result-score-title">Cumulative Kuppuswamy Score</div>
+      <div class="result-score-title" id="ui-res-title">Cumulative Kuppuswamy Score</div>
       <div class="result-score-val" id="total-score">-</div>
       <div class="result-ses-label" id="ses-class">Awaiting full input...</div>
 
       <div class="breakdown-grid">
         <div class="breakdown-item">
-          <span>Income Score</span>
+          <span id="ui-bd-inc">Income Score</span>
           <b id="score-inc">-</b>
         </div>
         <div class="breakdown-item">
-          <span>Education Score</span>
+          <span id="ui-bd-edu">Education Score</span>
           <b id="score-edu">-</b>
         </div>
         <div class="breakdown-item">
-          <span>Occupation Score</span>
+          <span id="ui-bd-occ">Occupation Score</span>
           <b id="score-occ">-</b>
         </div>
       </div>
 
+      <!-- Translated SES Reference Table -->
+      <div class="reference-table-wrapper">
+        <div class="reference-table-title" id="ui-ref-heading">Kuppuswamy SES Classification Reference</div>
+        <table class="reference-table">
+          <thead>
+            <tr>
+              <th id="ui-ref-col-score">Total Score</th>
+              <th id="ui-ref-col-class">Socioeconomic Class</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr id="tier-row-1">
+              <td>26 – 29</td>
+              <td id="ui-tier-1">Upper Class (Class I)</td>
+            </tr>
+            <tr id="tier-row-2">
+              <td>16 – 25</td>
+              <td id="ui-tier-2">Upper Middle Class (Class II)</td>
+            </tr>
+            <tr id="tier-row-3">
+              <td>11 – 15</td>
+              <td id="ui-tier-3">Middle Class (Class III)</td>
+            </tr>
+            <tr id="tier-row-4">
+              <td>5 – 10</td>
+              <td id="ui-tier-4">Lower Middle Class (Class IV)</td>
+            </tr>
+            <tr id="tier-row-5">
+              <td>&lt; 5 (3 – 4)</td>
+              <td id="ui-tier-5">Lower Class (Class V)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
       <div class="action-buttons">
-        <button class="btn btn-secondary" onclick="resetForm()">Reset</button>
-        <button class="btn btn-primary" onclick="window.print()">Print / Save Assessment</button>
+        <button class="btn btn-secondary" id="ui-btn-reset" onclick="resetForm()">Reset</button>
+        <button class="btn btn-primary" id="ui-btn-print" onclick="window.print()">Print / Save Assessment</button>
       </div>
     </div>
 
-    <!-- Methodology & Attribution -->
+    <!-- Methodology & Attribution (Strictly Untranslated in English) -->
     <div class="metadata-panel">
       <h3>Methodological Reference</h3>
       <p>
@@ -386,6 +513,273 @@
 </div>
 
 <script>
+  const translations = {
+    en: {
+      title: "Kuppuswamy SES Calculator",
+      subtitle: "Automated Socioeconomic Classification (Updated August 2024 / CPI-IW Jan 2024)",
+      incLabel: "1. Monthly Family Income (₹)",
+      incHelper: "Enter the exact total monthly household income in Indian Rupees.",
+      incPlaceholder: "e.g. 35000",
+      eduLabel: "2. Education of Family Head",
+      eduOpt0: "-- Select Educational Attainment --",
+      eduOpt7: "Post-Graduate or Professional Degree (Score: 7)",
+      eduOpt6: "Graduate Degree (Score: 6)",
+      eduOpt5: "Intermediate / Post High-School Diploma (Score: 5)",
+      eduOpt4: "High School Certificate (Score: 4)",
+      eduOpt3: "Middle School Certificate (Score: 3)",
+      eduOpt2: "Literate (Less than Middle School) (Score: 2)",
+      eduOpt1: "Illiterate (Score: 1)",
+      occLabel: "3. Occupation of Family Head",
+      occOpt0: "-- Select Occupation Category --",
+      occOpt10: "Professionals (Score: 10)",
+      occOpt6: "Semi-Professionals (Score: 6)",
+      occOpt5: "Shopkeeper / Clerical / Arithmetic Skill Jobs (Score: 5)",
+      occOpt4: "Skilled Worker (Score: 4)",
+      occOpt3: "Semi-Skilled Worker (Score: 3)",
+      occOpt2: "Unskilled Worker (Score: 2)",
+      occOpt1: "Unemployed (Score: 1)",
+      resTitle: "Cumulative Kuppuswamy Score",
+      awaitingInput: "Awaiting full input...",
+      incompleteInput: "Please complete all 3 inputs",
+      bdInc: "Income Score",
+      bdEdu: "Education Score",
+      bdOcc: "Occupation Score",
+      refHeading: "Kuppuswamy SES Classification Reference",
+      refColScore: "Total Score",
+      refColClass: "Socioeconomic Class",
+      tier1: "Upper Class (Class I)",
+      tier2: "Upper Middle Class (Class II)",
+      tier3: "Middle Class (Class III)",
+      tier4: "Lower Middle Class (Class IV)",
+      tier5: "Lower Class (Class V)",
+      btnReset: "Reset",
+      btnPrint: "Print / Save Assessment"
+    },
+    hi: {
+      title: "कुप्पुस्वामी सामाजिक-आर्थिक स्थिति (SES) कैलकुलेटर",
+      subtitle: "स्वचालित सामाजिक-आर्थिक वर्गीकरण (अगस्त 2024 अपडेट / CPI-IW जनवरी 2024)",
+      incLabel: "1. परिवार की कुल मासिक आय / Monthly Family Income (₹)",
+      incHelper: "भारतीय रुपये में परिवार की सटीक कुल मासिक आय दर्ज करें।",
+      incPlaceholder: "उदा. 35000",
+      eduLabel: "2. परिवार के मुखिया की शिक्षा / Education of Family Head",
+      eduOpt0: "-- शैक्षणिक योग्यता चुनें (Select Educational Attainment) --",
+      eduOpt7: "स्नातकोत्तर या व्यावसायिक डिग्री (Post-Graduate or Professional Degree) (अंक: 7)",
+      eduOpt6: "स्नातक डिग्री (Graduate Degree) (अंक: 6)",
+      eduOpt5: "इंटरमीडिएट / हाई स्कूल के बाद डिप्लोमा (Intermediate / Post High-School Diploma) (अंक: 5)",
+      eduOpt4: "हाई स्कूल प्रमाणपत्र (High School Certificate) (अंक: 4)",
+      eduOpt3: "मिडिल स्कूल प्रमाणपत्र (Middle School Certificate) (अंक: 3)",
+      eduOpt2: "साक्षर (मिडिल स्कूल से कम) (Literate - Less than Middle School) (अंक: 2)",
+      eduOpt1: "निरक्षर / अशिक्षित (Illiterate) (अंक: 1)",
+      occLabel: "3. परिवार के मुखिया का व्यवसाय / Occupation of Family Head",
+      occOpt0: "-- व्यवसाय श्रेणी चुनें (Select Occupation Category) --",
+      occOpt10: "पेशेवर (Professionals) (अंक: 10)",
+      occOpt6: "अर्ध-पेशेवर (Semi-Professionals) (अंक: 6)",
+      occOpt5: "दुकानदार / लिपिक / अंकगणित कौशल कार्य (Shopkeeper / Clerical / Arithmetic Skill Jobs) (अंक: 5)",
+      occOpt4: "कुशल श्रमिक (Skilled Worker) (अंक: 4)",
+      occOpt3: "अर्ध-कुशल श्रमिक (Semi-Skilled Worker) (अंक: 3)",
+      occOpt2: "अकुशल श्रमिक (Unskilled Worker) (अंक: 2)",
+      occOpt1: "बेरोजगार (Unemployed) (अंक: 1)",
+      resTitle: "कुल कुप्पुस्वामी स्कोर",
+      awaitingInput: "सभी विवरणों की प्रतीक्षा है...",
+      incompleteInput: "कृपया सभी 3 विवरण भरें",
+      bdInc: "आय स्कोर",
+      bdEdu: "शिक्षा स्कोर",
+      bdOcc: "व्यवसाय स्कोर",
+      refHeading: "कुप्पुस्वामी SES वर्गीकरण संदर्भ तालिका",
+      refColScore: "कुल स्कोर",
+      refColClass: "सामाजिक-आर्थिक वर्ग",
+      tier1: "उच्च वर्ग (वर्ग I)",
+      tier2: "उच्च मध्यम वर्ग (वर्ग II)",
+      tier3: "मध्यम वर्ग (वर्ग III)",
+      tier4: "निम्न मध्यम वर्ग (वर्ग IV)",
+      tier5: "निम्न वर्ग (वर्ग V)",
+      btnReset: "रीसेट करें",
+      btnPrint: "प्रिंट / पीडीएफ सहेजें"
+    },
+    ta: {
+      title: "குப்புசாமி சமூக-பொருளாதார நிலை (SES) கணிப்பான்",
+      subtitle: "தானியங்கி சமூக-பொருளாதார வகைப்பாடு (ஆகஸ்ட் 2024 புதுப்பிப்பு / CPI-IW ஜனவரி 2024)",
+      incLabel: "1. குடும்பத்தின் மாதாந்திர மொத்த வருமானம் / Monthly Family Income (₹)",
+      incHelper: "இந்திய ரூபாயில் குடும்பத்தின் துல்லியமான மாதாந்திர மொத்த வருமானத்தை உள்ளிடவும்.",
+      incPlaceholder: "எ.கா. 35000",
+      eduLabel: "2. குடும்பத் தலைவரின் கல்வித் தகுதி / Education of Family Head",
+      eduOpt0: "-- கல்வித் தகுதியைத் தேர்ந்தெடுக்கவும் (Select Educational Attainment) --",
+      eduOpt7: "முதுகலை அல்லது தொழிற்கல்வி பட்டம் (Post-Graduate or Professional Degree) (மதிப்பெண்: 7)",
+      eduOpt6: "இளங்கலை பட்டம் (Graduate Degree) (மதிப்பெண்: 6)",
+      eduOpt5: "மேல்நிலைக் கல்வி (+2) / டிப்ளமோ (Intermediate / Post High-School Diploma) (மதிப்பெண்: 5)",
+      eduOpt4: "உயர்நிலைப் பள்ளி சான்றிதழ் (High School Certificate) (மதிப்பெண்: 4)",
+      eduOpt3: "நடுநிலைப் பள்ளி சான்றிதழ் (Middle School Certificate) (மதிப்பெண்: 3)",
+      eduOpt2: "எழுதப் படிக்கத் தெரிந்தவர் (நடுநிலைப் பள்ளிக்குக் கீழ்) (Literate - Less than Middle School) (மதிப்பெண்: 2)",
+      eduOpt1: "எழுத்தறிவற்றவர் (Illiterate) (மதிப்பெண்: 1)",
+      occLabel: "3. குடும்பத் தலைவரின் தொழில் / Occupation of Family Head",
+      occOpt0: "-- தொழில் வகையைத் தேர்ந்தெடுக்கவும் (Select Occupation Category) --",
+      occOpt10: "உயர் தொழில் வல்லுநர்கள் (Professionals) (மதிப்பெண்: 10)",
+      occOpt6: "துணைத் தொழில் வல்லுநர்கள் (Semi-Professionals) (மதிப்பெண்: 6)",
+      occOpt5: "கடைக்காரர் / எழுத்தர் / கணக்கியல் சார்ந்த பணிகள் (Shopkeeper / Clerical / Arithmetic Skill Jobs) (மதிப்பெண்: 5)",
+      occOpt4: "திறன்மிகு தொழிலாளி (Skilled Worker) (மதிப்பெண்: 4)",
+      occOpt3: "பகுதி திறன் கொண்ட தொழிலாளி (Semi-Skilled Worker) (மதிப்பெண்: 3)",
+      occOpt2: "திறனற்ற தொழிலாளி (Unskilled Worker) (மதிப்பெண்: 2)",
+      occOpt1: "வேலையில்லாதவர் (Unemployed) (மதிப்பெண்: 1)",
+      resTitle: "மொத்த குப்புசாமி மதிப்பெண்",
+      awaitingInput: "முழு விவரங்களுக்காகக் காத்திருக்கிறது...",
+      incompleteInput: "தயவுசெய்து 3 விவரங்களையும் பூர்த்தி செய்யவும்",
+      bdInc: "வருமான மதிப்பெண்",
+      bdEdu: "கல்வி மதிப்பெண்",
+      bdOcc: "தொழில் மதிப்பெண்",
+      refHeading: "குப்புசாமி SES வகைப்பாடு அட்டவணை",
+      refColScore: "மொத்த மதிப்பெண்",
+      refColClass: "சமூக-பொருளாதார பிரிவு",
+      tier1: "உயர் வர்க்கம் (பிரிவு I)",
+      tier2: "உயர் நடுத்தர வர்க்கம் (பிரிவு II)",
+      tier3: "நடுத்தர வர்க்கம் (பிரிவு III)",
+      tier4: "கீழ் நடுத்தர வர்க்கம் (பிரிவு IV)",
+      tier5: "கீழ் வர்க்கம் (பிரிவு V)",
+      btnReset: "மீட்டமை",
+      btnPrint: "அச்சிடு / சேமி"
+    },
+    mr: {
+      title: "कुप्पुस्वामी सामाजिक-आर्थिक स्तर (SES) गणकयंत्र",
+      subtitle: "स्वयंचलित सामाजिक-आर्थिक वर्गीकरण (ऑगस्ट २०२४ अद्ययावत / CPI-IW जानेवारी २०२४)",
+      incLabel: "1. कुटुंबाचे एकूण मासिक उत्पन्न / Monthly Family Income (₹)",
+      incHelper: "भारतीय रुपयांमध्ये कुटुंबाचे अचूक एकूण मासिक उत्पन्न प्रविष्ट करा.",
+      incPlaceholder: "उदा. 35000",
+      eduLabel: "2. कुटुंब प्रमुखाचे शिक्षण / Education of Family Head",
+      eduOpt0: "-- शैक्षणिक पात्रता निवडा (Select Educational Attainment) --",
+      eduOpt7: "पदव्युत्तर किंवा व्यावसायिक पदवी (Post-Graduate or Professional Degree) (गुण: 7)",
+      eduOpt6: "पदवीधर (Graduate Degree) (गुण: 6)",
+      eduOpt5: "उच्च माध्यमिक (१२ वी) / पोस्ट-हायस्कूल डिप्लोमा (Intermediate / Post High-School Diploma) (गुण: 5)",
+      eduOpt4: "हायस्कूल (१० वी) प्रमाणपत्र (High School Certificate) (गुण: 4)",
+      eduOpt3: "माध्यमिक शाळा प्रमाणपत्र (Middle School Certificate) (गुण: 3)",
+      eduOpt2: "साक्षर (माध्यमिक शाळेपेक्षा कमी शिक्षण) (Literate - Less than Middle School) (गुण: 2)",
+      eduOpt1: "निरक्षर (Illiterate) (गुण: 1)",
+      occLabel: "3. कुटुंब प्रमुखाचा व्यवसाय / Occupation of Family Head",
+      occOpt0: "-- व्यवसाय श्रेणी निवडा (Select Occupation Category) --",
+      occOpt10: "व्यावसायिक (Professionals) (गुण: 10)",
+      occOpt6: "अर्ध-व्यावसायिक (Semi-Professionals) (गुण: 6)",
+      occOpt5: "दुकानदार / लिपिक / अंकगणित कौशल्य नोकऱ्या (Shopkeeper / Clerical / Arithmetic Skill Jobs) (गुण: 5)",
+      occOpt4: "कुशल कामगार (Skilled Worker) (गुण: 4)",
+      occOpt3: "अर्ध-कुशल कामगार (Semi-Skilled Worker) (गुण: 3)",
+      occOpt2: "अकुशल कामगार (Unskilled Worker) (गुण: 2)",
+      occOpt1: "बेरोजगार (Unemployed) (गुण: 1)",
+      resTitle: "एकूण कुप्पुस्वामी गुण",
+      awaitingInput: "सर्व तपशीलांची प्रतीक्षा आहे...",
+      incompleteInput: "कृपया सर्व ३ तपशील भरा",
+      bdInc: "उत्पन्न गुण",
+      bdEdu: "शिक्षण गुण",
+      bdOcc: "व्यवसाय गुण",
+      refHeading: "कुप्पुस्वामी SES वर्गीकरण संदर्भ तक्ता",
+      refColScore: "एकूण गुण",
+      refColClass: "सामाजिक-आर्थिक वर्ग",
+      tier1: "उच्च वर्ग (वर्ग I)",
+      tier2: "उच्च मध्यम वर्ग (वर्ग II)",
+      tier3: "मध्यम वर्ग (वर्ग III)",
+      tier4: "निम्न मध्यम वर्ग (वर्ग IV)",
+      tier5: "निम्न वर्ग (वर्ग V)",
+      btnReset: "रीसेट करा",
+      btnPrint: "प्रिंट / जतन करा"
+    },
+    bn: {
+      title: "কুপ্পুস্বামী আর্থ-সামাজিক অবস্থা (SES) ক্যালকুলেটর",
+      subtitle: "স্বয়ংক্রিয় আর্থ-সামাজিক শ্রেণিবিন্যাস (আগস্ট ২০২৪ আপডেট / CPI-IW জানুয়ারি ২০২৪)",
+      incLabel: "১. পরিবারের মাসিক মোট আয় / Monthly Family Income (₹)",
+      incHelper: "ভারতীয় রুপিতে পরিবারের সঠিক মোট মাসিক আয় লিখুন।",
+      incPlaceholder: "যেমন: 35000",
+      eduLabel: "২. পরিবার প্রধানের শিক্ষাগত যোগ্যতা / Education of Family Head",
+      eduOpt0: "-- শিক্ষাগত যোগ্যতা নির্বাচন করুন (Select Educational Attainment) --",
+      eduOpt7: "স্নাতকোত্তর বা পেশাদার ডিগ্রি (Post-Graduate or Professional Degree) (স্কোর: ৭)",
+      eduOpt6: "স্নাতক ডিগ্রি (Graduate Degree) (স্কোর: ৬)",
+      eduOpt5: "উচ্চ মাধ্যমিক (১২শ) / ডিপ্লোমা (Intermediate / Post High-School Diploma) (স্কোর: ৫)",
+      eduOpt4: "মাধ্যমিক / হাই স্কুল সার্টিফিকেট (High School Certificate) (স্কোর: ৪)",
+      eduOpt3: "মিডল স্কুল সার্টিফিকেট (Middle School Certificate) (স্কোর: ৩)",
+      eduOpt2: "সাক্ষর (মিডল স্কুলের নিচে) (Literate - Less than Middle School) (স্কোর: ২)",
+      eduOpt1: "নিরক্ষর (Illiterate) (স্কোর: ১)",
+      occLabel: "৩. পরিবার প্রধানের পেশা / Occupation of Family Head",
+      occOpt0: "-- পেশার শ্রেণি নির্বাচন করুন (Select Occupation Category) --",
+      occOpt10: "পেশাজীবী (Professionals) (স্কোর: ১০)",
+      occOpt6: "আধা-পেশাজীবী (Semi-Professionals) (স্কোর: ৬)",
+      occOpt5: "দোকানদার / করণিক / গাণিতিক দক্ষতার কাজ (Shopkeeper / Clerical / Arithmetic Skill Jobs) (স্কোর: ৫)",
+      occOpt4: "দক্ষ শ্রমিক (Skilled Worker) (স্কোর: ৪)",
+      occOpt3: "আধা-দক্ষ শ্রমিক (Semi-Skilled Worker) (স্কোর: ৩)",
+      occOpt2: "অদক্ষ শ্রমিক (Unskilled Worker) (স্কোর: ২)",
+      occOpt1: "বেকার (Unemployed) (স্কোর: ১)",
+      resTitle: "মোট কুপ্পুস্বামী স্কোর",
+      awaitingInput: "সম্পূর্ণ তথ্যের জন্য অপেক্ষা করা হচ্ছে...",
+      incompleteInput: "অনুগ্রহ করে ৩টি তথ্যই পূরণ করুন",
+      bdInc: "আয় স্কোর",
+      bdEdu: "শিক্ষা স্কোর",
+      bdOcc: "পেশা স্কোর",
+      refHeading: "কুপ্পুস্বামী SES শ্রেণিবিন্যাস নির্দেশিকা",
+      refColScore: "মোট স্কোর",
+      refColClass: "আর্থ-সামাজিক শ্রেণি",
+      tier1: "উচ্চবিত্ত শ্রেণি (শ্রেণি I)",
+      tier2: "উচ্চ-মধ্যবিত্ত শ্রেণি (শ্রেণি II)",
+      tier3: "মধ্যবিত্ত শ্রেণি (শ্রেণি III)",
+      tier4: "নিম্ন-মধ্যবিত্ত শ্রেণি (শ্রেণি IV)",
+      tier5: "নিম্নবিত্ত শ্রেণি (শ্রেণি V)",
+      btnReset: "রিসেট করুন",
+      btnPrint: "প্রিন্ট / সংরক্ষণ করুন"
+    }
+  };
+
+  let currentLang = "en";
+
+  function setLanguage(lang) {
+    if (!translations[lang]) return;
+    currentLang = lang;
+    document.documentElement.lang = lang;
+
+    document.querySelectorAll(".lang-btn").forEach(btn => {
+      btn.classList.toggle("active", btn.getAttribute("data-lang") === lang);
+    });
+
+    const t = translations[lang];
+    document.getElementById("ui-title").innerText = t.title;
+    document.getElementById("ui-subtitle").innerText = t.subtitle;
+    document.getElementById("ui-inc-label").innerText = t.incLabel;
+    document.getElementById("ui-inc-helper").innerText = t.incHelper;
+    document.getElementById("income").placeholder = t.incPlaceholder;
+
+    document.getElementById("ui-edu-label").innerText = t.eduLabel;
+    document.getElementById("ui-edu-opt0").innerText = t.eduOpt0;
+    document.getElementById("ui-edu-opt7").innerText = t.eduOpt7;
+    document.getElementById("ui-edu-opt6").innerText = t.eduOpt6;
+    document.getElementById("ui-edu-opt5").innerText = t.eduOpt5;
+    document.getElementById("ui-edu-opt4").innerText = t.eduOpt4;
+    document.getElementById("ui-edu-opt3").innerText = t.eduOpt3;
+    document.getElementById("ui-edu-opt2").innerText = t.eduOpt2;
+    document.getElementById("ui-edu-opt1").innerText = t.eduOpt1;
+
+    document.getElementById("ui-occ-label").innerText = t.occLabel;
+    document.getElementById("ui-occ-opt0").innerText = t.occOpt0;
+    document.getElementById("ui-occ-opt10").innerText = t.occOpt10;
+    document.getElementById("ui-occ-opt6").innerText = t.occOpt6;
+    document.getElementById("ui-occ-opt5").innerText = t.occOpt5;
+    document.getElementById("ui-occ-opt4").innerText = t.occOpt4;
+    document.getElementById("ui-occ-opt3").innerText = t.occOpt3;
+    document.getElementById("ui-occ-opt2").innerText = t.occOpt2;
+    document.getElementById("ui-occ-opt1").innerText = t.occOpt1;
+
+    document.getElementById("ui-res-title").innerText = t.resTitle;
+    document.getElementById("ui-bd-inc").innerText = t.bdInc;
+    document.getElementById("ui-bd-edu").innerText = t.bdEdu;
+    document.getElementById("ui-bd-occ").innerText = t.bdOcc;
+
+    document.getElementById("ui-ref-heading").innerText = t.refHeading;
+    document.getElementById("ui-ref-col-score").innerText = t.refColScore;
+    document.getElementById("ui-ref-col-class").innerText = t.refColClass;
+    document.getElementById("ui-tier-1").innerText = t.tier1;
+    document.getElementById("ui-tier-2").innerText = t.tier2;
+    document.getElementById("ui-tier-3").innerText = t.tier3;
+    document.getElementById("ui-tier-4").innerText = t.tier4;
+    document.getElementById("ui-tier-5").innerText = t.tier5;
+
+    document.getElementById("ui-btn-reset").innerText = t.btnReset;
+    document.getElementById("ui-btn-print").innerText = t.btnPrint;
+
+    // Re-evaluate output status text in selected language without triggering analytics ping
+    updateDisplayOnly();
+  }
+
   function getIncomeScore(val) {
     if (isNaN(val) || val === "" || val === null) return 0;
     const n = Number(val);
@@ -398,7 +792,14 @@
     return 1;
   }
 
-  function calculateSES() {
+  function clearActiveTierHighlight() {
+    for (let i = 1; i <= 5; i++) {
+      document.getElementById("tier-row-" + i).classList.remove("active-tier");
+    }
+  }
+
+  function updateDisplayOnly() {
+    const t = translations[currentLang];
     const incInput = document.getElementById("income").value;
     const eduScore = parseInt(document.getElementById("education").value) || 0;
     const occScore = parseInt(document.getElementById("occupation").value) || 0;
@@ -409,13 +810,24 @@
     const eduEl = document.getElementById("score-edu");
     const occEl = document.getElementById("score-occ");
 
+    clearActiveTierHighlight();
+
+    if (incInput === "" && eduScore === 0 && occScore === 0) {
+      totalEl.innerText = "-";
+      sesEl.innerText = t.awaitingInput;
+      incEl.innerText = "-";
+      eduEl.innerText = "-";
+      occEl.innerText = "-";
+      return false;
+    }
+
     if (incInput === "" || eduScore === 0 || occScore === 0) {
       totalEl.innerText = "-";
-      sesEl.innerText = "Please complete all 3 inputs";
+      sesEl.innerText = t.incompleteInput;
       incEl.innerText = incInput !== "" ? getIncomeScore(incInput) : "-";
       eduEl.innerText = eduScore || "-";
       occEl.innerText = occScore || "-";
-      return;
+      return false;
     }
 
     const incScore = getIncomeScore(incInput);
@@ -427,26 +839,40 @@
     totalEl.innerText = total + " / 29";
 
     let ses = "";
+    let tierRow = 5;
     if (total >= 26) {
-      ses = "Upper Class (Class I)";
+      ses = t.tier1;
+      tierRow = 1;
     } else if (total >= 16) {
-      ses = "Upper Middle Class (Class II)";
+      ses = t.tier2;
+      tierRow = 2;
     } else if (total >= 11) {
-      ses = "Middle Class (Class III)";
+      ses = t.tier3;
+      tierRow = 3;
     } else if (total >= 5) {
-      ses = "Lower Middle Class (Class IV)";
+      ses = t.tier4;
+      tierRow = 4;
     } else {
-      ses = "Lower Class (Class V)";
+      ses = t.tier5;
+      tierRow = 5;
     }
 
     sesEl.innerText = ses;
-      // --- TRACK ACTUAL CALCULATION COMPLETION ---
-    if (window.goatcounter && window.goatcounter.count) {
-      window.goatcounter.count({
-        path: 'event/ses-calculated',
-        title: 'SES Score Calculated',
-        event: true
-      });
+    document.getElementById("tier-row-" + tierRow).classList.add("active-tier");
+    return true;
+  }
+
+  function calculateSES() {
+    const isComplete = updateDisplayOnly();
+
+    if (isComplete) {
+      if (window.goatcounter && window.goatcounter.count) {
+        window.goatcounter.count({
+          path: 'event/ses-calculated',
+          title: 'SES Score Calculated',
+          event: true
+        });
+      }
     }
   }
 
@@ -454,11 +880,7 @@
     document.getElementById("income").value = "";
     document.getElementById("education").value = "";
     document.getElementById("occupation").value = "";
-    document.getElementById("total-score").innerText = "-";
-    document.getElementById("ses-class").innerText = "Awaiting full input...";
-    document.getElementById("score-inc").innerText = "-";
-    document.getElementById("score-edu").innerText = "-";
-    document.getElementById("score-occ").innerText = "-";
+    updateDisplayOnly();
   }
 
   function copyCitation() {
